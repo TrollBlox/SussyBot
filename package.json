@@ -1,0 +1,28 @@
+{
+  "name": "sussybot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TrollBlox/SussyBot.git"
+  },
+  "author": "TrollBlox",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TrollBlox/SussyBot/issues"
+  },
+  "homepage": "https://github.com/TrollBlox/SussyBot#readme",
+  "dependencies": {
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.30.0",
+    "discord.js": "^13.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.12.0"
+  }
+}
