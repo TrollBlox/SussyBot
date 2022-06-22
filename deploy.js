@@ -21,3 +21,4 @@ const rest = new REST({ version: '9' }).setToken(token);
 rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
 	.then(() => console.log(`${new Date(Date.now())}: Reloaded application (/) commands in ${(Date.now() - startTime) / 1000} seconds!`))
 	.catch(console.error);
+	
