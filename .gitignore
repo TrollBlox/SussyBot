@@ -3,3 +3,5 @@ node_modules
 config.json
 archives.txt
 error.txt
+package-lock.json
+package.json
