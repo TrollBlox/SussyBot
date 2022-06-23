@@ -1,3 +1,5 @@
+const startTime = Date.now();
+
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -15,10 +17,9 @@ const force = process.argv.includes('--force') || process.argv.includes('-f');
 
 sequelize.sync({ force }).then(async () => {
   if (force) {
-    console.log('Database reset');
+    console.log(`${new Date(Date.now)}: Database synced in ${(Date.now() - startTime) / 1000} seconds!`);
   } else {
-	  console.log('Database synced');
+    console.log(`${new Date(Date.now)}: Database synced in ${(Date.now() - startTime) / 1000} seconds!`);
   }
-
 	sequelize.close();
 }).catch(console.error);

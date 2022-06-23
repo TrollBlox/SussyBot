@@ -3,7 +3,7 @@ const startTime = Date.now();
 const fs = require('node:fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { clientId, token } = require('./config.json');
+const { clientId, token, guildId } = require('./config.json');
 
 const commands = [];
 
@@ -17,7 +17,7 @@ for (const file of commandFiles) {
 
 const rest = new REST({ version: '9' }).setToken(token);
 
-rest.put(Routes.applicationCommands(clientId), { body: commands })
-	.then(() => console.log(`${new Date(Date.now())}: Reloaded application (/) commands in ${(Date.now() - startTime) / 1000} seconds!`))
+rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
+	.then(() => console.log(`${new Date(Date.now())}: Reloaded application guild (/) commands in ${(Date.now() - startTime) / 1000} seconds!`))
 	.catch(console.error);
 	
