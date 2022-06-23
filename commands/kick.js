@@ -33,7 +33,13 @@ module.exports = {
         return int.reply({ embeds: [ embededd ]});
       }
   
-      int.guild.members.kick(user.id, `${reason}`);
+      int.guild.members.kick(user.id, `${reason}`).catch(error => {
+        if (error.code == 50013) {
+          embededd.setDescription('The bot is unable to kick this person. This is usually because the person you tried to kick is the server owner or the bot itself.');
+          return int.reply({ embeds: [ embededd] })
+        }
+        func.error(error, int);
+      });
 
       func.log(int);
   

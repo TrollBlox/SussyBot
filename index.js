@@ -1,11 +1,11 @@
+const Sequelize = require('sequelize');
 const startTime = Date.now();
-
 const fs = require('node:fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const func = require('./utils/functions');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -27,17 +27,22 @@ client.on('interactionCreate', async int => {
 
 	if (!command) return;
 
-	try {
+	// try {
 		await command.execute(int, client);
-	} catch (error) {
-		func.error(error, int);
-		await int.reply({ content: 'There was an error while executing this command!', ephemeral: true }).catch(error => {
-			if (error.name == 'INTERACTION_ALREADY_REPLIED') {
-				// What do I do here?
-			}
-		});
-	}
+	// } catch (error) {
+	// 	func.error(error, int);
+	// 	await int.reply({ content: 'There was an error while executing this command!', ephemeral: true }).catch(error => {
+	// 		if (error.name == 'INTERACTION_ALREADY_REPLIED') {
+	// 			// What do I do here?
+	// 		}
+	// 	});
+	// }
 
+});
+
+client.on('messageCreate', async msg => {
+	if (msg.author == client.user) return;
+	await func.checkWords(msg);
 });
 
 client.login(token);
