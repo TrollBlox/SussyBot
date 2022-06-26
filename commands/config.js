@@ -74,8 +74,11 @@ module.exports = {
           .setDescription("The new punishment")
           .setRequired(true)
           .setChoices([
-            ["One day timemout", 1],
-            ["Kick from the server", 2],
+            ["Five minute timeout", 5],
+            ["One hour timeout", 7],
+            ["One day timeout", 1],
+            ["Kick from server", 2],
+            ["One day ban", 6],
             ["One week ban", 3],
             ["Perma-ban", 4],
           ])))
@@ -195,6 +198,32 @@ module.exports = {
             const punishment = int.options.getInteger('punishment');
 
             await func.setPunishment(int.guild.id, warnings, punishment);
+            switch (punishments) {
+              case null:
+              case 0:
+                punishments = 'none';
+                break;
+              case 1:
+                punishments = 'one day timeout';
+                break;
+              case 2:
+                punishments = 'server kick';
+                break;
+              case 3:
+                punishments = 'one week ban';
+                break;
+              case 4:
+                punishments = 'perma-ban';
+                break;
+              case 5:
+                punishments = 'five minute timeout';
+                break;
+              case 6:
+                punishments = 'one day ban';
+                break;
+              case 7:
+                punishments = 'one hour timeout';
+            }
             embededd.setDescription("Successfully changed punishment setting!");
             await int.reply({ embeds: [ embededd ] });
             return await func.log(int, `set the punishment for ${warnings} warnings to ${punishment}!`, client);
@@ -223,6 +252,14 @@ module.exports = {
                 case 4:
                   punishments[x] = 'perma-ban';
                   break;
+                case 5:
+                  punishments[x] = 'five minute timeout';
+                  break;
+                case 6:
+                  punishments[x] = 'one day ban';
+                  break;
+                case 7:
+                  punishments[x] = 'one hour timeout';
               }
             }
             embededd.setDescription(`Punishments for ${int.guild.name} are:\n
