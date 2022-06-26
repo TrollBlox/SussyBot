@@ -16,40 +16,36 @@ module.exports = {
   async execute(int, client) {
     const embededd = new MessageEmbed()
       .setTitle('Kick')
-      .setColor('#F21717');
+      .setColor('BLURPLE');
   
     const func = require('../utils/functions');
     const user = int.options.getUser('user');
     const reason = int.options.getString('reason') || 'No reason provided';
 
-    try {
-      if (!int.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) {
-        embededd.setDescription('You do not have permission to use this command!');
-        return int.reply({ embeds: [ embededd ]});
-      }
-      
-      if (int.member.roles.highest > int.guild.members.cache.get(user.id).roles.highest) {
-        embededd.setDescription('You cannot kick this person!');
-        return int.reply({ embeds: [ embededd ]});
-      }
-  
-      int.guild.members.kick(user.id, `${reason}`).catch(error => {
-        if (error.code == 50013) {
-          embededd.setDescription('The bot is unable to kick this person. This is usually because the person you tried to kick is the server owner or the bot itself.');
-          return int.reply({ embeds: [ embededd] })
-        }
-        func.error(error, int);
-      });
-
-      func.log(int);
-  
-      embededd.setDescription(`Successfully kicked <@${user.id}> for ${reason}!`);
-      return int.reply({ embeds: [ embededd ] });
-      
-    } catch (error) {
-      func.error(error, int, client);
-      embededd.setDescription(`Something went wrong kicking <@${user.id}>!`);
-      return int.reply({ embeds: [ embededd ] });
+    if (!int.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) {
+      embededd.setDescription('You do not have permission to use this command!');
+      await int.reply({ embeds: [ embededd ]});
+      return await func.log(int, `tried to use /kick when they didn't have permission!`, client);
     }
+    
+    if (int.member.roles.highest > int.guild.members.cache.get(user.id).roles.highest || user == client.user) {
+      embededd.setDescription('You cannot kick this person!');
+      await int.reply({ embeds: [ embededd ]});
+      return await func.log(int, `tried to /ban someone higher than themselves!`, client);
+    }
+  
+    int.guild.members.kick(user.id, `${reason}`).catch(async error => {
+      if (error.code == 50013) {
+        embededd.setDescription('The bot is unable to kick this person. This is usually because the person you tried to kick is the server owner or the bot itself.');
+        await int.reply({ embeds: [ embededd] });
+        return await func.log(int, `tried to ban ${int.guild.name}'s owner, <@${await int.guild.fetchOwner().id}>!`, client)
+      }
+      await func.error(error, int, client);
+    });
+
+  
+    embededd.setDescription(`Successfully kicked <@${user.id}> for ${reason}!`);
+    await int.reply({ embeds: [ embededd ] });
+    return await func.log(int, `kicked <@${user.id}> from this server for ${reason}!`, client);
   },
 };

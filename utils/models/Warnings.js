@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-	return sequelize.define("Guild", {
+	return sequelize.define("Warnings", {
 		guild_and_user_id: {
 			type: DataTypes.STRING,
 			primaryKey: true,

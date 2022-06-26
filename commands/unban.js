@@ -16,52 +16,50 @@ module.exports = {
 	async execute(int, client) {
     const embededd = new MessageEmbed()
       .setTitle('Unban')
-      .setColor('#F21717');
+      .setColor('BLURPLE');
 
     const func = require('../utils/functions');
     const userid = int.options.getString('user');
     const reason = int.options.getString('reason') || 'No reason provided';
-    const user = client.users.fetch(userid).catch(error => {
+    const user = client.users.fetch(userid).catch(async error => {
       if (error.code == 50035) {
-        embededd.setDescription(`<@${userid}> is not a valid user!`);
-        return int.reply({ embeds: [ embededd ] });
+        embededd.setDescription(`${userid} is not a valid user!`);
+        await int.reply({ embeds: [ embededd ] });
+        return await func.log(int, `tried to unban an invalid user!`, client);
       }
-      func.error(error, int);
+      await func.error(error, int, client);
     });
     
-    try {
-      if (!int.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
-        embededd.setDescription('You do not have permission to use this command!');
-        return int.reply({ embeds: [ embededd ]});
-      }
-
-      const banList = await int.guild.bans.fetch();
-
-      const bannedUser = banList.find(user => user.id === user.id);
-
-      if (!bannedUser) {
-        embededd.setDescription(`<@${userid}> is not banned!`);
-        return int.reply({ embeds: [ embededd ] });
-      }
-
-      int.guild.members.unban(userid).catch(error => {
-        if (error.code == 50035) {
-          embededd.setDescription(`<@${userid}> is not a valid user!`);
-          return int.reply({ embeds: [ embededd ] });
-        }
-        
-        console.error(error);
-      });
-
-      func.log(int);
-
-      embededd.setDescription(`Successfully unbanned <@${userid}> for ${reason}!`);
-      return int.reply({ embeds: [ embededd ] });
-      
-    } catch (error) {
-      func.error(error, int, client);
-      embededd.setDescription(`Something went wrong unbanning <@${userid}>!`);
-      return int.reply({ embeds: [ embededd ] });
+    if (!int.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
+      embededd.setDescription('You do not have permission to use this command!');
+      await int.reply({ embeds: [ embededd ]});
+      return await func.log(int, `tried to use /kick when they didn't have permission!`, client);
     }
+
+    const banList = await int.guild.bans.fetch();
+
+    const bannedUser = banList.find(user => user.id === user.id);
+
+    if (!bannedUser) {
+      embededd.setDescription(`<@${userid}> is not banned!`);
+      await int.reply({ embeds: [ embededd ] });
+      return await func.log(int, `tried to unban a user that was not banned!`, client);
+    }
+
+    int.guild.members.unban(userid).catch(async error => {
+      if (error.code == 50035) {
+        embededd.setDescription(`<@${userid}> is not a valid user!`);
+        await int.reply({ embeds: [ embededd ] });
+        return await func.log(int, `tried to unban an invalid user!`, client);
+      }
+      
+      console.error(error);
+    });
+
+
+    embededd.setDescription(`Successfully unbanned <@${userid}> for ${reason}!`);
+    await int.reply({ embeds: [ embededd ] });
+    return await func.log(int, `unbanned <@${userid}> for ${reason}!`, client);
+    
 	},
 };
