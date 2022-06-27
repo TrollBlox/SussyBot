@@ -163,7 +163,7 @@ module.exports = {
           case 'view':
             let badwords = await func.getBadwords(int.guild.id);
             for (x in badwords) {
-              badwords[x] = badwords[x].badword;
+              badwords[x] = `"||${badwords[x].badword}||"`;
             }
             if (badwords.length === 0) {
               embededd.setDescription(`You have no badwords registered for ${int.guild.name}!`);
